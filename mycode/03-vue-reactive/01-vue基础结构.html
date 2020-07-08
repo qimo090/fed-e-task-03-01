@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue 基础结构</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="app">
+  <div class="border">
+    <h1>插值表达式</h1>
+    <h3>{{ msg }}</h3>
+    <h3>{{ count }}</h3>
+  </div>
+  <div class="border">
+    <h1>v-text</h1>
+    <div v-text="msg"></div>
+  </div>
+  <div class="border">
+    <h1>v-model</h1>
+    <label>
+      msg:
+      <input type="text" v-model="msg"/>
+    </label>
+    <label>
+      count:
+      <input type="text" v-model="count"/>
+    </label>
+  </div>
+</div>
+<script src="./vue.js"></script>
+<script>
+  let vm = new Vue({
+    el: '#app',
+    data: {
+      msg: 'Hello Vue',
+      count: 20,
+    },
+  })
+</script>
+</body>
+</html>
