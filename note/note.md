@@ -432,10 +432,12 @@ let eventBus = new Vue()
 
 // --- ComponentA.vue
 // 发布者
-addTodo () {
-// 发布消息（事件）
-eventBus.$emit('add-todo', { text: this.newTodoText })
-this.newTodoText = ''
+methods = {
+  addTodo () {
+    // 发布消息（事件）
+    eventBus.$emit('add-todo', { text: this.newTodoText })
+    this.newTodoText = ''
+  }
 }
 
 // --- ComponentB.vue
@@ -642,10 +644,10 @@ class Vue {
   + 当数据变化后重新渲染视图
 + 结构
   + Compiler
-  + ---
+  + 属性
     + el
     + vm
-  + ---
+  + 方法
     + compile
     + compileElement(node)
     + compileText(node)
@@ -777,9 +779,9 @@ Dependency
   + 通知所有的观察者
 + 结构
   + Dep
-  + ---
+  + 属性
     + subs
-  + ---
+  + 方法
     + addSub(sub)
     + notify()
 
@@ -792,12 +794,12 @@ Dependency
   + 自身实例化的时候往 `dep` 中添加自己
 + 结构
   + Watcher
-  + ---
+  + 属性
     + vm
     + key
     + cb
     + oldValue
-  + ---
+  + 方法
     + update()
 
 # 任务四：Virtual DOM 的实现原理
