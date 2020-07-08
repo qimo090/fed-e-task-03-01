@@ -15,13 +15,14 @@ export default class VueRouter {
     this.initEvent()
   }
 
+  // 遍历所有路由规则，把路由规则解析成键值对的形式，存储到 routeMap 中
   createRouteMap () {
-    // 遍历所有路由规则，把路由规则解析成键值对的形式，存储到 routeMap 中
     this.options.routes.forEach(route => {
       this.routeMap[route.path] = route.component
     })
   }
 
+  // 创建两个组件 <router-link /> 和 <router-view />
   initComponents (Vue) {
     Vue.component('router-link', {
       props: {
@@ -57,6 +58,7 @@ export default class VueRouter {
     })
   }
 
+  // 监听 popstate 事件
   initEvent () {
     window.addEventListener('popstate', () => {
       this.data.current = window.location.pathname

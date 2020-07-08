@@ -14,11 +14,13 @@ class Observer {
   defineReactive (data, key, val) {
     // 创建依赖容器，负责收集依赖，并发送通知
     let dep = new Dep()
+    // 递归进行data中的数据响应化
     this.walk(val)
     Object.defineProperty(data, key, {
       enumerable: true,
       configurable: true,
       get: () => {
+        console.log(Dep.target)
         // 收集依赖
         Dep.target && dep.addSub(Dep.target)
         return val

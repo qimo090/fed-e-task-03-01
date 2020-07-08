@@ -12,6 +12,7 @@ class Vue {
     new Compiler(this)
   }
 
+  // 负责将 data 中的属性注入到 Vue 实例中，通过 this.xxx 直接访问到
   _proxyData (data) {
     // 遍历 data 中的所有属性
     Object.keys(data).forEach(key => {
