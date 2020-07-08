@@ -1,4 +1,8 @@
-> 首先回顾 Vue Router 的基本使用，以及 Hash 模式和 History 模式的区别，然后自己手写一个实现基 History 模式的前端路由，了解路由内部实现的原理；接下来在数据响应式实现原理分析中，自己动手一个简易版本的 Vue；最后掌握虚拟 DOM 的作用，通过一个虚拟 DOM 库 Snabbdom 真正了解什么是虚拟 DOM，以及 Diff 算法的实现和 key 的作用。
+> 首先回顾 Vue Router 的基本使用，以及 Hash 模式和 History 模式的区别，然后自己手写一个实现基 History 模式的前端路由，了解路由内部实现的原理；
+>
+> 接下来在数据响应式实现原理分析中，自己动手一个简易版本的 Vue；
+>
+> 最后掌握虚拟 DOM 的作用，通过一个虚拟 DOM 库 Snabbdom 真正了解什么是虚拟 DOM，以及 Diff 算法的实现和 key 的作用。
 
 # 任务一：Vue.js 基础回顾
 
@@ -111,7 +115,7 @@ History 模式的使用
 
 History Node.js
 
-`原生Node`
+`原生 Node`
 
 ```javascript
 const http = require('http')
@@ -173,9 +177,9 @@ Vue 前置知识
 
 - 插件
 - 混入
-- Vue.observable()
+- `Vue.observable()`
 - 插槽
-- render 函数
+- `render` 函数
 - 运行时和完整版的 Vue
 
 ### Hash 模式
@@ -216,16 +220,16 @@ VueRouter 类图
 
 - VueRouter
 - 属性
-  - options
-  - data
-  - routeMap
+  - `options`
+  - `data`
+  - `routeMap`
 - 方法
-  - Constructor(Options): VueRouter
-  - install(Vue): void
-  - init(): void
-  - initEvent(): void
-  - createRouteMap(): void
-  - initComponents(Vue): void
+  - `Constructor(Options): VueRouter`
+  - `install(Vue): void`
+  - `init(): void`
+  - `initEvent(): void`
+  - `createRouteMap(): void`
+  - `initComponents(Vue): void`
 
 ### Vue 的构建版本
 
@@ -431,13 +435,16 @@ console.log(vm.msg)
 ### 发布/订阅模式
 
 - 发布/订阅模式
+
   - 订阅者
   - 发布者
   - 消息中心
+
     我们假定存在一个"消息中心"，某个任务执行完成，就向消息中心"发布"(publish)一个信号，其他任务可以向消息中心"订阅"(subscribe)这个信号，从而直到什么时候可以自己开始执行，这就叫做 **"发布订阅模式"** (publish-subscribe pattern)
+
 - Vue 的自定义事件
 
-  - https://cn.vuejs.org/v2/guide/migration.html#dispatch-%E5%92%8C-broadcast-%E6%9B%BF%E6%8D%A2
+  - [Vue 官网-自定义事件](https://cn.vuejs.org/v2/guide/migration.html#dispatch-%E5%92%8C-broadcast-%E6%9B%BF%E6%8D%A2)
 
   ```javascript
   let vm = new Vue()
@@ -451,65 +458,65 @@ console.log(vm.msg)
 
 - 兄弟组件通信过程
 
-```javascript
-// eventBus.js
-// 事件中心
-let eventBus = new Vue()
+  ```javascript
+  // eventBus.js
+  // 事件中心
+  let eventBus = new Vue()
 
-// --- ComponentA.vue
-// 发布者
-methods = {
-  addTodo() {
-    // 发布消息（事件）
-    eventBus.$emit('add-todo', { text: this.newTodoText })
-    this.newTodoText = ''
-  },
-}
+  // --- ComponentA.vue
+  // 发布者
+  methods = {
+    addTodo() {
+      // 发布消息（事件）
+      eventBus.$emit('add-todo', { text: this.newTodoText })
+      this.newTodoText = ''
+    },
+  }
 
-// --- ComponentB.vue
-// 订阅者
-let vue = {
-  created() {
-    // 订阅消息（事件）
-    eventBus.$on('add-todo', this.addTodo)
-  },
-}
-```
+  // --- ComponentB.vue
+  // 订阅者
+  let vue = {
+    created() {
+      // 订阅消息（事件）
+      eventBus.$on('add-todo', this.addTodo)
+    },
+  }
+  ```
 
 - 模拟 Vue 自定义事件的实现
 
-```javascript
-// 事件触发器
-class EventEmitter {
-  constructor() {
-    this.subs = Object.create(null)
-  }
+  ```javascript
+  // 事件触发器
+  class EventEmitter {
+    constructor() {
+      this.subs = Object.create(null)
+    }
 
-  // 注册事件
-  $on(eventType, handler) {
-    this.subs[eventType] = this.subs[eventType] || []
-    this.subs[eventType].push(handler)
-  }
-  // 触发事件
-  $emit(eventType) {
-    if (this.subs[eventType]) {
-      this.subs[eventType].forEach(handler => {
-        handler()
-      })
+    // 注册事件
+    $on(eventType, handler) {
+      this.subs[eventType] = this.subs[eventType] || []
+      this.subs[eventType].push(handler)
+    }
+    // 触发事件
+    $emit(eventType) {
+      if (this.subs[eventType]) {
+        this.subs[eventType].forEach(handler => {
+          handler()
+        })
+      }
     }
   }
-}
 
-let em = new EventEmitter()
-em.$on('click', () => {
-  console.log('click1')
-})
-em.$on('click', () => {
-  console.log('click2')
-})
+  let em = new EventEmitter()
+  em.$on('click', () => {
+    console.log('click1')
+  })
+  em.$on('click', () => {
+    console.log('click2')
+  })
 
-em.$emit('click')
-```
+  em.$emit('click')
+  ```
 
 ### 观察者模式
 
@@ -523,8 +530,13 @@ em.$emit('click')
 
 总结
 
-- **观察者模式** 是由具体目标调度，比如当事件触发，Dep 就是去调用观察者的方法，所以观察者模式与发布者之间是存在依赖的
-- **发布订阅模式** 由统一的调度中心调用，因此发布者和订阅者不需要知道对方的存在
+- **观察者模式**
+
+  是由具体目标调度，比如当事件触发，Dep 就是去调用观察者的方法，所以观察者模式与发布者之间是存在依赖的
+
+- **发布订阅模式**
+
+  由统一的调度中心调用，因此发布者和订阅者不需要知道对方的存在
 
 ![Observer-PublishSubscribe](https://tva1.sinaimg.cn/large/007S8ZIlgy1ggi5vwbynuj30ba08ywfk.jpg)
 
@@ -558,47 +570,47 @@ em.$emit('click')
   - 负责调用 `Compiler` 解析指令和插值表达式
 - 结构
   - Vue
-    - \$options
-    - \$el
-    - \$data
-    - \_proxyData()
+    - `$options`
+    - `$el`
+    - `$data`
+    - `_proxyData()`
 - 代码
 
-```javascript
-class Vue {
-  constructor(options) {
-    // 1.通过属性保存选项的数据
-    this.$options = options || {}
-    this.$data = options.data || {}
-    this.$el =
-      typeof options.el === 'string'
-        ? document.querySelector(options.el)
-        : options.el
-    // 2.把 data 中的成员转换成 getter/setter，并注入到 Vue 实例中
-    this._proxyData(this.$data)
-    // 3.调用 observer 对象，监听数据的变化
-    // 4.调用 compiler 对象，解析指令和插值表达式
-  }
+  ```javascript
+  class Vue {
+    constructor(options) {
+      // 1.通过属性保存选项的数据
+      this.$options = options || {}
+      this.$data = options.data || {}
+      this.$el =
+        typeof options.el === 'string'
+          ? document.querySelector(options.el)
+          : options.el
+      // 2.把 data 中的成员转换成 getter/setter，并注入到 Vue 实例中
+      this._proxyData(this.$data)
+      // 3.调用 observer 对象，监听数据的变化
+      // 4.调用 compiler 对象，解析指令和插值表达式
+    }
 
-  _proxyData(data) {
-    // 遍历 data 中的所有属性
-    Object.keys(data).forEach(key => {
-      // 把 data 的属性注入到 Vue 实例中
-      Object.defineProperty(this, key, {
-        enumerable: true,
-        configurable: true,
-        get() {
-          return data[key]
-        },
-        set(newValue) {
-          if (newValue === data[key]) return
-          data[key] = newValue
-        },
+    _proxyData(data) {
+      // 遍历 data 中的所有属性
+      Object.keys(data).forEach(key => {
+        // 把 data 的属性注入到 Vue 实例中
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          configurable: true,
+          get() {
+            return data[key]
+          },
+          set(newValue) {
+            if (newValue === data[key]) return
+            data[key] = newValue
+          },
+        })
       })
-    })
+    }
   }
-}
-```
+  ```
 
 ### Observer
 
@@ -608,77 +620,77 @@ class Vue {
   - 数据变化时发送通知
 - 结构
   - Observer
-    - walk(data)
-    - defineReactive(data, key, value)
+    - `walk(data)`
+    - `defineReactive(data, key, value)`
 - 代码
 
-```javascript
-class Observer {
-  constructor(data) {
-    this.walk(data)
-  }
-  walk(data) {
-    // 1.判断data是否是对象
-    if (!data || typeof data !== 'object') return
-    // 2.遍历data对象的所有属性
-    Object.keys(data).forEach(key => {
-      this.defineReactive(data, key, data[key])
-    })
-  }
-  // 数据响应式
-  defineReactive(data, key, val) {
-    this.walk(val)
-    Object.defineProperty(data, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => {
-        return val
-      },
-      set: newValue => {
-        if (newValue === val) return
-        val = newValue
-        // 通知，给新赋值的数据进行响应式处理，比如 msg: 'msg' => msg: { title: 'msg' }
-        this.walk(newValue)
-      },
-    })
-  }
-}
-
-class Vue {
-  constructor(options) {
-    // 1.通过属性保存选项的数据
-    this.$options = options || {}
-    this.$data = options.data || {}
-    this.$el =
-      typeof options.el === 'string'
-        ? document.querySelector(options.el)
-        : options.el
-    // 2.把 data 中的成员转换成 getter/setter，并注入到 Vue 实例中
-    this._proxyData(this.$data)
-    // 3.调用 observer 对象，监听数据的变化
-    new Observer(this.$data)
-    // 4.调用 compiler 对象，解析指令和插值表达式
-  }
-
-  _proxyData(data) {
-    // 遍历 data 中的所有属性
-    Object.keys(data).forEach(key => {
-      // 把 data 的属性注入到 Vue 实例中
-      Object.defineProperty(this, key, {
+  ```javascript
+  class Observer {
+    constructor(data) {
+      this.walk(data)
+    }
+    walk(data) {
+      // 1.判断data是否是对象
+      if (!data || typeof data !== 'object') return
+      // 2.遍历data对象的所有属性
+      Object.keys(data).forEach(key => {
+        this.defineReactive(data, key, data[key])
+      })
+    }
+    // 数据响应式
+    defineReactive(data, key, val) {
+      this.walk(val)
+      Object.defineProperty(data, key, {
         enumerable: true,
         configurable: true,
-        get() {
-          return data[key]
+        get: () => {
+          return val
         },
-        set(newValue) {
-          if (newValue === data[key]) return
-          data[key] = newValue
+        set: newValue => {
+          if (newValue === val) return
+          val = newValue
+          // 通知，给新赋值的数据进行响应式处理，比如 msg: 'msg' => msg: { title: 'msg' }
+          this.walk(newValue)
         },
       })
-    })
+    }
   }
-}
-```
+
+  class Vue {
+    constructor(options) {
+      // 1.通过属性保存选项的数据
+      this.$options = options || {}
+      this.$data = options.data || {}
+      this.$el =
+        typeof options.el === 'string'
+          ? document.querySelector(options.el)
+          : options.el
+      // 2.把 data 中的成员转换成 getter/setter，并注入到 Vue 实例中
+      this._proxyData(this.$data)
+      // 3.调用 observer 对象，监听数据的变化
+      new Observer(this.$data)
+      // 4.调用 compiler 对象，解析指令和插值表达式
+    }
+
+    _proxyData(data) {
+      // 遍历 data 中的所有属性
+      Object.keys(data).forEach(key => {
+        // 把 data 的属性注入到 Vue 实例中
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          configurable: true,
+          get() {
+            return data[key]
+          },
+          set(newValue) {
+            if (newValue === data[key]) return
+            data[key] = newValue
+          },
+        })
+      })
+    }
+  }
+  ```
 
 ### Compiler
 
@@ -689,133 +701,133 @@ class Vue {
 - 结构
   - Compiler
   - 属性
-    - el
-    - vm
+    - `el`
+    - `vm`
   - 方法
-    - compile
-    - compileElement(node)
-    - compileText(node)
-    - isDirective(attrName)
-    - isTextNode(node)
-    - isElementNode(node)
+    - `compile`
+    - `compileElement(node)`
+    - `compileText(node)`
+    - `isDirective(attrName)`
+    - `isTextNode(node)`
+    - `isElementNode(node)`
 - 代码
 
-```javascript
-class Compiler {
-  constructor(vm) {
-    this.el = vm.$el
-    this.vm = vm
-    this.compile(this.el)
-  }
+  ```javascript
+  class Compiler {
+    constructor(vm) {
+      this.el = vm.$el
+      this.vm = vm
+      this.compile(this.el)
+    }
 
-  // 编译模板，处理文本节点和元素节点
-  compile(el) {
-    let childNodes = el.childNodes
-    Array.from(childNodes).forEach(node => {
-      if (this.isTextNode(node)) {
-        // 处理文本节点
-        this.compileText(node)
-      } else if (this.isElementNode(node)) {
-        // 处理元素节点
-        this.compileElement(node)
+    // 编译模板，处理文本节点和元素节点
+    compile(el) {
+      let childNodes = el.childNodes
+      Array.from(childNodes).forEach(node => {
+        if (this.isTextNode(node)) {
+          // 处理文本节点
+          this.compileText(node)
+        } else if (this.isElementNode(node)) {
+          // 处理元素节点
+          this.compileElement(node)
+        }
+
+        // 判断 node 节点是否有子节点，如果有，递归调用 compile
+        if (node.childNodes && node.childNodes.length) {
+          this.compile(node)
+        }
+      })
+    }
+
+    // 编译元素节点，处理指令
+    compileElement(node) {
+      // console.log(node.attributes)
+      // 遍历所有的属性节点
+      Array.from(node.attributes).forEach(attr => {
+        // 判断是否是指令
+        let attrName = attr.name
+        if (this.isDirective(attrName)) {
+          // v-text => text, v-model => model ...
+          attrName = attrName.substr(2)
+          let key = attr.value
+          this.update(node, key, attrName)
+        }
+      })
+    }
+    update(node, key, attrName) {
+      let updateFn = this[`${attrName}Updater`]
+      updateFn && updateFn(node, this.vm[key])
+    }
+    // 处理 v-text 指令
+    textUpdater(node, value) {
+      node.textContent = value
+    }
+    // 处理 v-model 指令
+    modelUpdater(node, value) {
+      node.value = value
+    }
+
+    // 编译文本节点，处理插值表达式
+    compileText(node) {
+      // console.dir(node)
+      // {{  msg }}
+      let reg = /{{(.+?)}}/
+      let value = node.textContent
+      if (reg.test(value)) {
+        let key = RegExp.$1.trim()
+        node.textContent = value.replace(reg, this.vm[key])
       }
-
-      // 判断 node 节点是否有子节点，如果有，递归调用 compile
-      if (node.childNodes && node.childNodes.length) {
-        this.compile(node)
-      }
-    })
-  }
-
-  // 编译元素节点，处理指令
-  compileElement(node) {
-    // console.log(node.attributes)
-    // 遍历所有的属性节点
-    Array.from(node.attributes).forEach(attr => {
-      // 判断是否是指令
-      let attrName = attr.name
-      if (this.isDirective(attrName)) {
-        // v-text => text, v-model => model ...
-        attrName = attrName.substr(2)
-        let key = attr.value
-        this.update(node, key, attrName)
-      }
-    })
-  }
-  update(node, key, attrName) {
-    let updateFn = this[`${attrName}Updater`]
-    updateFn && updateFn(node, this.vm[key])
-  }
-  // 处理 v-text 指令
-  textUpdater(node, value) {
-    node.textContent = value
-  }
-  // 处理 v-model 指令
-  modelUpdater(node, value) {
-    node.value = value
-  }
-
-  // 编译文本节点，处理插值表达式
-  compileText(node) {
-    // console.dir(node)
-    // {{  msg }}
-    let reg = /{{(.+?)}}/
-    let value = node.textContent
-    if (reg.test(value)) {
-      let key = RegExp.$1.trim()
-      node.textContent = value.replace(reg, this.vm[key])
+    }
+    // 判断元素是否是指令
+    isDirective(attrName) {
+      return attrName.startsWith('v-')
+    }
+    // 判断节点是否是文本节点
+    isTextNode(node) {
+      return node.nodeType === 3
+    }
+    // 判断节点是否是元素节点
+    isElementNode(node) {
+      return node.nodeType === 1
     }
   }
-  // 判断元素是否是指令
-  isDirective(attrName) {
-    return attrName.startsWith('v-')
-  }
-  // 判断节点是否是文本节点
-  isTextNode(node) {
-    return node.nodeType === 3
-  }
-  // 判断节点是否是元素节点
-  isElementNode(node) {
-    return node.nodeType === 1
-  }
-}
 
-class Vue {
-  constructor(options) {
-    // 1.通过属性保存选项的数据
-    this.$options = options || {}
-    this.$data = options.data || {}
-    this.$el =
-      typeof options.el === 'string'
-        ? document.querySelector(options.el)
-        : options.el
-    // 2.把 data 中的成员转换成 getter/setter，并注入到 Vue 实例中
-    this._proxyData(this.$data)
-    // 3.调用 observer 对象，监听数据的变化
-    new Observer(this.$data)
-    // 4.调用 compiler 对象，解析指令和插值表达式
-    new Compiler(this)
-  }
+  class Vue {
+    constructor(options) {
+      // 1.通过属性保存选项的数据
+      this.$options = options || {}
+      this.$data = options.data || {}
+      this.$el =
+        typeof options.el === 'string'
+          ? document.querySelector(options.el)
+          : options.el
+      // 2.把 data 中的成员转换成 getter/setter，并注入到 Vue 实例中
+      this._proxyData(this.$data)
+      // 3.调用 observer 对象，监听数据的变化
+      new Observer(this.$data)
+      // 4.调用 compiler 对象，解析指令和插值表达式
+      new Compiler(this)
+    }
 
-  _proxyData(data) {
-    // 遍历 data 中的所有属性
-    Object.keys(data).forEach(key => {
-      // 把 data 的属性注入到 Vue 实例中
-      Object.defineProperty(this, key, {
-        enumerable: true,
-        configurable: true,
-        get() {
-          return data[key]
-        },
-        set(newValue) {
-          if (newValue === data[key]) return
-          data[key] = newValue
-        },
+    _proxyData(data) {
+      // 遍历 data 中的所有属性
+      Object.keys(data).forEach(key => {
+        // 把 data 的属性注入到 Vue 实例中
+        Object.defineProperty(this, key, {
+          enumerable: true,
+          configurable: true,
+          get() {
+            return data[key]
+          },
+          set(newValue) {
+            if (newValue === data[key]) return
+            data[key] = newValue
+          },
+        })
       })
-    })
+    }
   }
-}
-```
+  ```
 
 ### Dep
 
@@ -828,10 +840,10 @@ Dependency
 - 结构
   - Dep
   - 属性
-    - subs
+    - `subs`
   - 方法
-    - addSub(sub)
-    - notify()
+    - `addSub(sub)`
+    - `notify()`
 
 ### Watcher
 
@@ -843,18 +855,18 @@ Dependency
 - 结构
   - Watcher
   - 属性
-    - vm
-    - key
-    - cb
-    - oldValue
+    - `vm`
+    - `key`
+    - `cb`
+    - `oldValue`
   - 方法
-    - update()
+    - `update()`
 
 ## 总结
 
 - 问题
-  - 给属性重新赋值成对象，是否是响应式的？Yes
-  - 给 Vue 实例新增一个成员是否是响应式的？No
+  - 给属性重新赋值成对象，是否是响应式的？_Yes_
+  - 给 Vue 实例新增一个成员是否是响应式的？*No*s
 - 通过下图回顾整体流程
   ![new Vue](https://tva1.sinaimg.cn/large/006tNbRwly1g9wn15bw9uj314q0lwwi7.jpg)
 
@@ -868,7 +880,7 @@ Dependency
 
 ## 虚拟 DOM
 
-### 什么是 Virtual DOM
+### 什么是 Virtual DOM ?
 
 - Virtual DOM 是由普通的 JS 对象来描述 DOM 对象，因为不是真实的 DOM 对象，所以叫 Virtual DOM
 - 真实 DOM 成员示例
@@ -880,7 +892,7 @@ Dependency
     s += key + ','
   }
   // 打印结果
-  // "align,title,lang,translate,dir,hidden,accessKey,draggable,spellcheck,autocapitalize,contentEditable,isContentEditable,inputMode,offsetParent,offsetTop,offsetLeft,offsetWidth,offsetHeight,style,innerText,outerText,oncopy,oncut,onpaste,onabort,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontextmenu,oncuechange,ondblclick,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onload,onloadeddata,onloadedmetadata,onloadstart,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onpause,onplay,onplaying,onprogress,onratechange,onreset,onresize,onscroll,onseeked,onseeking,onselect,onstalled,onsubmit,onsuspend,ontimeupdate,ontoggle,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,onauxclick,ongotpointercapture,onlostpointercapture,onpointerdown,onpointermove,onpointerup,onpointercancel,onpointerover,onpointerout,onpointerenter,onpointerleave,onselectstart,onselectionchange,onanimationend,onanimationiteration,onanimationstart,ontransitionend,dataset,nonce,autofocus,tabIndex,click,attachInternals,focus,blur,enterKeyHint,onpointerrawupdate,namespaceURI,prefix,localName,tagName,id,className,classList,slot,attributes,shadowRoot,part,assignedSlot,innerHTML,outerHTML,scrollTop,scrollLeft,scrollWidth,scrollHeight,clientTop,clientLeft,clientWidth,clientHeight,attributeStyleMap,onbeforecopy,onbeforecut,onbeforepaste,onsearch,elementTiming,previousElementSibling,nextElementSibling,children,firstElementChild,lastElementChild,childElementCount,onfullscreenchange,onfullscreenerror,onwebkitfullscreenchange,onwebkitfullscreenerror,hasAttributes,getAttributeNames,getAttribute,getAttributeNS,setAttribute,setAttributeNS,removeAttribute,removeAttributeNS,toggleAttribute,hasAttribute,hasAttributeNS,getAttributeNode,getAttributeNodeNS,setAttributeNode,setAttributeNodeNS,removeAttributeNode,attachShadow,closest,matches,webkitMatchesSelector,getElementsByTagName,getElementsByTagNameNS,getElementsByClassName,insertAdjacentElement,insertAdjacentText,setPointerCapture,releasePointerCapture,hasPointerCapture,insertAdjacentHTML,requestPointerLock,getClientRects,getBoundingClientRect,scrollIntoView,scroll,scrollTo,scrollBy,scrollIntoViewIfNeeded,animate,computedStyleMap,before,after,replaceWith,remove,prepend,append,querySelector,querySelectorAll,requestFullscreen,webkitRequestFullScreen,webkitRequestFullscreen,onbeforexrselect,ariaAtomic,ariaAutoComplete,ariaBusy,ariaChecked,ariaColCount,ariaColIndex,ariaColSpan,ariaCurrent,ariaDisabled,ariaExpanded,ariaHasPopup,ariaHidden,ariaKeyShortcuts,ariaLabel,ariaLevel,ariaLive,ariaModal,ariaMultiLine,ariaMultiSelectable,ariaOrientation,ariaPlaceholder,ariaPosInSet,ariaPressed,ariaReadOnly,ariaRelevant,ariaRequired,ariaRoleDescription,ariaRowCount,ariaRowIndex,ariaRowSpan,ariaSelected,ariaSort,ariaValueMax,ariaValueMin,ariaValueNow,ariaValueText,ariaDescription,ELEMENT_NODE,ATTRIBUTE_NODE,TEXT_NODE,CDATA_SECTION_NODE,ENTITY_REFERENCE_NODE,ENTITY_NODE,PROCESSING_INSTRUCTION_NODE,COMMENT_NODE,DOCUMENT_NODE,DOCUMENT_TYPE_NODE,DOCUMENT_FRAGMENT_NODE,NOTATION_NODE,DOCUMENT_POSITION_DISCONNECTED,DOCUMENT_POSITION_PRECEDING,DOCUMENT_POSITION_FOLLOWING,DOCUMENT_POSITION_CONTAINS,DOCUMENT_POSITION_CONTAINED_BY,DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC,nodeType,nodeName,baseURI,isConnected,ownerDocument,parentNode,parentElement,childNodes,firstChild,lastChild,previousSibling,nextSibling,nodeValue,textContent,hasChildNodes,getRootNode,normalize,cloneNode,isEqualNode,isSameNode,compareDocumentPosition,contains,lookupPrefix,lookupNamespaceURI,isDefaultNamespace,insertBefore,appendChild,replaceChild,removeChild,addEventListener,removeEventListener,dispatchEvent,"
+  ;('align,title,lang,translate,dir,hidden,accessKey,draggable,spellcheck,autocapitalize,contentEditable,isContentEditable,inputMode,offsetParent,offsetTop,offsetLeft,offsetWidth,offsetHeight,style,innerText,outerText,oncopy,oncut,onpaste,onabort,onblur,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontextmenu,oncuechange,ondblclick,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,onerror,onfocus,onformdata,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onload,onloadeddata,onloadedmetadata,onloadstart,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onpause,onplay,onplaying,onprogress,onratechange,onreset,onresize,onscroll,onseeked,onseeking,onselect,onstalled,onsubmit,onsuspend,ontimeupdate,ontoggle,onvolumechange,onwaiting,onwebkitanimationend,onwebkitanimationiteration,onwebkitanimationstart,onwebkittransitionend,onwheel,onauxclick,ongotpointercapture,onlostpointercapture,onpointerdown,onpointermove,onpointerup,onpointercancel,onpointerover,onpointerout,onpointerenter,onpointerleave,onselectstart,onselectionchange,onanimationend,onanimationiteration,onanimationstart,ontransitionend,dataset,nonce,autofocus,tabIndex,click,attachInternals,focus,blur,enterKeyHint,onpointerrawupdate,namespaceURI,prefix,localName,tagName,id,className,classList,slot,attributes,shadowRoot,part,assignedSlot,innerHTML,outerHTML,scrollTop,scrollLeft,scrollWidth,scrollHeight,clientTop,clientLeft,clientWidth,clientHeight,attributeStyleMap,onbeforecopy,onbeforecut,onbeforepaste,onsearch,elementTiming,previousElementSibling,nextElementSibling,children,firstElementChild,lastElementChild,childElementCount,onfullscreenchange,onfullscreenerror,onwebkitfullscreenchange,onwebkitfullscreenerror,hasAttributes,getAttributeNames,getAttribute,getAttributeNS,setAttribute,setAttributeNS,removeAttribute,removeAttributeNS,toggleAttribute,hasAttribute,hasAttributeNS,getAttributeNode,getAttributeNodeNS,setAttributeNode,setAttributeNodeNS,removeAttributeNode,attachShadow,closest,matches,webkitMatchesSelector,getElementsByTagName,getElementsByTagNameNS,getElementsByClassName,insertAdjacentElement,insertAdjacentText,setPointerCapture,releasePointerCapture,hasPointerCapture,insertAdjacentHTML,requestPointerLock,getClientRects,getBoundingClientRect,scrollIntoView,scroll,scrollTo,scrollBy,scrollIntoViewIfNeeded,animate,computedStyleMap,before,after,replaceWith,remove,prepend,append,querySelector,querySelectorAll,requestFullscreen,webkitRequestFullScreen,webkitRequestFullscreen,onbeforexrselect,ariaAtomic,ariaAutoComplete,ariaBusy,ariaChecked,ariaColCount,ariaColIndex,ariaColSpan,ariaCurrent,ariaDisabled,ariaExpanded,ariaHasPopup,ariaHidden,ariaKeyShortcuts,ariaLabel,ariaLevel,ariaLive,ariaModal,ariaMultiLine,ariaMultiSelectable,ariaOrientation,ariaPlaceholder,ariaPosInSet,ariaPressed,ariaReadOnly,ariaRelevant,ariaRequired,ariaRoleDescription,ariaRowCount,ariaRowIndex,ariaRowSpan,ariaSelected,ariaSort,ariaValueMax,ariaValueMin,ariaValueNow,ariaValueText,ariaDescription,ELEMENT_NODE,ATTRIBUTE_NODE,TEXT_NODE,CDATA_SECTION_NODE,ENTITY_REFERENCE_NODE,ENTITY_NODE,PROCESSING_INSTRUCTION_NODE,COMMENT_NODE,DOCUMENT_NODE,DOCUMENT_TYPE_NODE,DOCUMENT_FRAGMENT_NODE,NOTATION_NODE,DOCUMENT_POSITION_DISCONNECTED,DOCUMENT_POSITION_PRECEDING,DOCUMENT_POSITION_FOLLOWING,DOCUMENT_POSITION_CONTAINS,DOCUMENT_POSITION_CONTAINED_BY,DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC,nodeType,nodeName,baseURI,isConnected,ownerDocument,parentNode,parentElement,childNodes,firstChild,lastChild,previousSibling,nextSibling,nodeValue,textContent,hasChildNodes,getRootNode,normalize,cloneNode,isEqualNode,isSameNode,compareDocumentPosition,contains,lookupPrefix,lookupNamespaceURI,isDefaultNamespace,insertBefore,appendChild,replaceChild,removeChild,addEventListener,removeEventListener,dispatchEvent,')
   ```
 
 - 可以使用 Virtual DOM 来描述真实 DOM，示例
@@ -896,7 +908,7 @@ Dependency
   }
   ```
 
-### 为什么使用 Virtual DOM
+### 为什么使用 Virtual DOM ?
 
 - 手动操作 DOM 比较麻烦，还需要考虑浏览器兼容问题，虽然有 jQuery 等库简化 DOM 操作，但是随着项目的复杂，DOM 操作复杂提升
 - 为了简化 DOM 的复杂操作于是出现了各种 MVVM 框架，MVVM 框架解决了视图和状态的同步问题
@@ -920,11 +932,11 @@ Dependency
   - 可以通过模块扩展
   - 源码使用 TypeScript 开发
   - 最快的 Virtual DOM 之一
-- virtual-dom
+- [virtual-dom](https://github.com/Matt-Esch/virtual-dom)
 
 ## Snabbdom
 
-以下例子 snabbdom 版本为 0.7.0
+> 以下例子 snabbdom 版本为 0.7.0
 
 ### 创建项目
 
@@ -965,15 +977,16 @@ Dependency
 ### 导入 Snabbdom
 
 文档地址 https://github.com/snabbdom/snabbdom
-安装 Snabbdom
+
+**安装 Snabbdom**
 
 ```shell script
 yarn add snabbdom@0.7.0
 ```
 
-导入 Snabbdom
+**导入 Snabbdom**
 
-- Snabbdom 的官网 demo 中导入使用的是 commmon.js 模块化规范，我们使用更流行的 ESM 模块化语法 `import`
+- Snabbdom 的官网 demo 中导入使用的是 common.js 模块化规范，我们使用更流行的 ESM 模块化语法 `import`
 - 关于模块化的语法青参考阮一峰老师的 Module 的语法
 - ES6 模块与 CommonJS 模块的差异
 
@@ -999,11 +1012,11 @@ yarn add snabbdom@0.7.0
 - **注意** 导入时候不能使用 `import snabbdom from 'snabbdom'`
   - 原因：`node_modules/snabbdom.ts` 末尾导出使用的是 `export` 导出 API，没有使用 `export default` 进行默认导出
 
-### 模块
+### Snabbdom 模块
 
 Snabbdom 的核心库并不能处理元素的属性/样式/事件等，如果需要处理的话，可以使用模块
 
-常用模块
+**常用模块**
 
 - 官方提供了 6 个模块
   - `attributes`
@@ -1023,38 +1036,39 @@ Snabbdom 的核心库并不能处理元素的属性/样式/事件等，如果需
     - 设置行内样式，支持动画
     - `delayed/remove/destroy`
 
-模块使用
+**模块使用**
 
 - 模块使用步骤
+
   - 导入需要的模块
   - `init()` 中注册模块
   - 使用 `init()` 函数创建 VNode 函数，可以把第二个参数设置为对象，其他参数往后移
 
-```javascript
-import { init, h } from 'snabbdom'
-// 1. 导入模块
-import style from 'snabbdom/modules/style'
-import eventlisteners from 'snabbdom/modules/eventlisteners'
-// 2. 注册模块
-let patch = init([style, eventlisteners])
-// 3. 使用 h() 函数的第二个参数传入模块需要的数据
-let vnode = h(
-  'div',
-  {
-    style: {
-      backgroundColor: 'red',
+  ```javascript
+  import { init, h } from 'snabbdom'
+  // 1. 导入模块
+  import style from 'snabbdom/modules/style'
+  import eventlisteners from 'snabbdom/modules/eventlisteners'
+  // 2. 注册模块
+  let patch = init([style, eventlisteners])
+  // 3. 使用 h() 函数的第二个参数传入模块需要的数据
+  let vnode = h(
+    'div',
+    {
+      style: {
+        backgroundColor: 'red',
+      },
+      on: {
+        click: eventHandler,
+      },
     },
-    on: {
-      click: eventHandler,
-    },
-  },
-  [h('h1', 'Hello Snabbdom'), h('p', '这是 p 标签')]
-)
+    [h('h1', 'Hello Snabbdom'), h('p', '这是 p 标签')]
+  )
 
-function eventHandler() {
-  console.log('click !!!')
-}
-```
+  function eventHandler() {
+    console.log('click !!!')
+  }
+  ```
 
 ### Snabbdom 源码解析
 
@@ -1075,8 +1089,7 @@ function eventHandler() {
 
 #### Snabbdom 源码
 
-- 源码地址
-  - https://github.com/snabbdom/snabbdom
+- [源码地址](https://github.com/snabbdom/snabbdom)
 - src 目录结构
 
 ### h 函数
@@ -1093,7 +1106,7 @@ function eventHandler() {
     }).$mount('#app')
     ```
 
-  - `h()` 函数最早见于 hyperscript， 使用 JavaScript 创建超文本
+  - `h()` 函数最早见于 [hyperscript](https://github.com/hyperhype/hyperscript) ， 使用 JavaScript 创建超文本
   - Snabbdom 中的 `h()` 函数不是用来创建创建超文本，而是创建 VNode
 
 - 函数重载
