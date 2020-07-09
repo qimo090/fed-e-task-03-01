@@ -14,6 +14,7 @@ export default class VueRouter {
     this.createRouteMap()
     this.initComponents(_Vue)
     this.initEvent()
+    this.initUrl()
   }
 
   // 遍历所有路由规则，把路由规则解析成键值对的形式，存储到 routeMap 中
@@ -70,12 +71,24 @@ export default class VueRouter {
     })
   }
 
+  // locahost:8000 => localhost:8000/#/
+  initUrl () {
+    !this.getHash() && window.history.pushState(null, '', window.location.href + '#/')
+  }
+
   // 获取 hash 值，如http://localhost:8080/#/about => /about
   getHash () {
     let href = window.location.href
     const index = href.indexOf('#')
-    href = href.slice(index + 1)
+    href = index > 0 ? href.slice(index + 1) : ''
     return href
+  }
+
+  getFullUrl (path) {
+    const href = window.location.href
+    const index = href.indexOf('#')
+    const base = href.slice(0, index)
+    return base + '#' + path
   }
 
   static install (Vue) {
