@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Vue</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div id="app">
+    <h3>{{ msg }}</h3>
+    <div class="border">
+      <h1>插值表达式</h1>
+      <h3>{{ count }}</h3>
+    </div>
+    <div class="border">
+      <h1>v-text</h1>
+      <div v-text="msg"></div>
+    </div>
+    <div class="border">
+      <h1>v-html</h1>
+      <div v-html="html"></div>
+    </div>
+    <div class="border">
+      <h1>v-on</h1>
+      <button v-on:click="add">{{ count }}</button>
+    </div>
+    <div class="border">
+      <h1>v-model</h1>
+      <label>
+        msg:
+        <input type="text" v-model="msg" />
+      </label>
+      <label>
+        count:
+        <input type="text" v-model="count" />
+      </label>
+    </div>
+  </div>
+
+  <script src="./js/dep.js"></script>
+  <script src="./js/watcher.js"></script>
+  <script src="./js/observer.js"></script>
+  <script src="./js/compiler.js"></script>
+  <script src="./js/vue.js"></script>
+  <script>
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        msg: 'Hello Vue',
+        count: 20,
+        person: {
+          name: 'tom',
+        },
+        html: '<span style="color: red">This should be red.</span>'
+      },
+      methods: {
+        add () {
+          this.count ++
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
