@@ -620,28 +620,19 @@ function init(modules, domApi) {
 }
 exports.init = init;
 
-},{"./vnode":"node_modules/snabbdom/vnode.js","./is":"node_modules/snabbdom/is.js","./htmldomapi":"node_modules/snabbdom/htmldomapi.js","./h":"node_modules/snabbdom/h.js","./thunk":"node_modules/snabbdom/thunk.js"}],"src/01-basicusage.js":[function(require,module,exports) {
+},{"./vnode":"node_modules/snabbdom/vnode.js","./is":"node_modules/snabbdom/is.js","./htmldomapi":"node_modules/snabbdom/htmldomapi.js","./h":"node_modules/snabbdom/h.js","./thunk":"node_modules/snabbdom/thunk.js"}],"src/05-debug-updateChildren.js":[function(require,module,exports) {
 "use strict";
 
 var _snabbdom = require("snabbdom");
 
-// 1. hello world
-// init 参数：数组/模块
-//      返回值：patch 函数，作用是对比两个 vnode 的差异更新到真实 DOM
-var patch = (0, _snabbdom.init)([]); // 第一个参数：标签 + 选择器
-// 第二个参数：如果是字符串的话就是标签中的内容
-
-var vnode = (0, _snabbdom.h)('div#container.cls', 'hello world');
-var app = document.querySelector('#app'); // patch 第一个参数：VNode | DOM Element，内部会把 DOM Element s转换成 VNode
-//       第二个参数：VNode
-//       返回值：VNode
-
-var oldVNode = patch(app, vnode); // 假设的时刻
-
-setTimeout(function () {
-  vnode = (0, _snabbdom.h)('div', 'Hello Snabbdom');
-  patch(oldVNode, vnode);
-}, 2000);
+var patch = (0, _snabbdom.init)([]);
+var oldVnode = null;
+var newVnode = null;
+var app = document.getElementById('app');
+newVnode = (0, _snabbdom.h)('ul', [(0, _snabbdom.h)('li', '首页'), (0, _snabbdom.h)('li', '视频'), (0, _snabbdom.h)('li', '微博')]);
+oldVnode = patch(app, newVnode);
+newVnode = (0, _snabbdom.h)('ul', [(0, _snabbdom.h)('li', '首页'), (0, _snabbdom.h)('li', '微博'), (0, _snabbdom.h)('li', '视频')]);
+patch(oldVnode, newVnode);
 },{"snabbdom":"node_modules/snabbdom/snabbdom.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -670,7 +661,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52041" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62139" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -846,5 +837,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/01-basicusage.js"], null)
-//# sourceMappingURL=/01-basicusage.8fdafd7a.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/05-debug-updateChildren.js"], null)
+//# sourceMappingURL=/05-debug-updateChildren.9d0d8e87.js.map

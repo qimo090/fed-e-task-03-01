@@ -620,24 +620,127 @@ function init(modules, domApi) {
 }
 exports.init = init;
 
-},{"./vnode":"node_modules/snabbdom/vnode.js","./is":"node_modules/snabbdom/is.js","./htmldomapi":"node_modules/snabbdom/htmldomapi.js","./h":"node_modules/snabbdom/h.js","./thunk":"node_modules/snabbdom/thunk.js"}],"src/02-basicusage.js":[function(require,module,exports) {
+},{"./vnode":"node_modules/snabbdom/vnode.js","./is":"node_modules/snabbdom/is.js","./htmldomapi":"node_modules/snabbdom/htmldomapi.js","./h":"node_modules/snabbdom/h.js","./thunk":"node_modules/snabbdom/thunk.js"}],"node_modules/snabbdom/modules/eventlisteners.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function invokeHandler(handler, vnode, event) {
+    if (typeof handler === "function") {
+        // call function handler
+        handler.call(vnode, event, vnode);
+    }
+    else if (typeof handler === "object") {
+        // call handler with arguments
+        if (typeof handler[0] === "function") {
+            // special case for single argument for performance
+            if (handler.length === 2) {
+                handler[0].call(vnode, handler[1], event, vnode);
+            }
+            else {
+                var args = handler.slice(1);
+                args.push(event);
+                args.push(vnode);
+                handler[0].apply(vnode, args);
+            }
+        }
+        else {
+            // call multiple handlers
+            for (var i = 0; i < handler.length; i++) {
+                invokeHandler(handler[i]);
+            }
+        }
+    }
+}
+function handleEvent(event, vnode) {
+    var name = event.type, on = vnode.data.on;
+    // call event handler(s) if exists
+    if (on && on[name]) {
+        invokeHandler(on[name], vnode, event);
+    }
+}
+function createListener() {
+    return function handler(event) {
+        handleEvent(event, handler.vnode);
+    };
+}
+function updateEventListeners(oldVnode, vnode) {
+    var oldOn = oldVnode.data.on, oldListener = oldVnode.listener, oldElm = oldVnode.elm, on = vnode && vnode.data.on, elm = (vnode && vnode.elm), name;
+    // optimization for reused immutable handlers
+    if (oldOn === on) {
+        return;
+    }
+    // remove existing listeners which no longer used
+    if (oldOn && oldListener) {
+        // if element changed or deleted we remove all existing listeners unconditionally
+        if (!on) {
+            for (name in oldOn) {
+                // remove listener if element was changed or existing listeners removed
+                oldElm.removeEventListener(name, oldListener, false);
+            }
+        }
+        else {
+            for (name in oldOn) {
+                // remove listener if existing listener removed
+                if (!on[name]) {
+                    oldElm.removeEventListener(name, oldListener, false);
+                }
+            }
+        }
+    }
+    // add new listeners which has not already attached
+    if (on) {
+        // reuse existing listener or create new
+        var listener = vnode.listener = oldVnode.listener || createListener();
+        // update vnode for listener
+        listener.vnode = vnode;
+        // if element changed or added we add all needed listeners unconditionally
+        if (!oldOn) {
+            for (name in on) {
+                // add listener if element was changed or new listeners added
+                elm.addEventListener(name, listener, false);
+            }
+        }
+        else {
+            for (name in on) {
+                // add listener if new listener added
+                if (!oldOn[name]) {
+                    elm.addEventListener(name, listener, false);
+                }
+            }
+        }
+    }
+}
+exports.eventListenersModule = {
+    create: updateEventListeners,
+    update: updateEventListeners,
+    destroy: updateEventListeners
+};
+exports.default = exports.eventListenersModule;
+
+},{}],"src/02-basicusage.js":[function(require,module,exports) {
 "use strict";
 
 var _snabbdom = require("snabbdom");
 
+var _eventlisteners = require("snabbdom/modules/eventlisteners");
+
 // 2. div > h1, p
-var patch = (0, _snabbdom.init)([]);
+var patch = (0, _snabbdom.init)([_eventlisteners.eventListenersModule]);
 var vnode = (0, _snabbdom.h)('div#container', [(0, _snabbdom.h)('h1', 'hello snabbdom'), (0, _snabbdom.h)('p', '这是个P标签')]);
 var app = document.querySelector('#app');
 var oldVnode = patch(app, vnode);
 setTimeout(function () {
-  vnode = (0, _snabbdom.h)('div#container', [(0, _snabbdom.h)('h1', 'Hello World'), (0, _snabbdom.h)('p', 'Hello P')]);
+  vnode = (0, _snabbdom.h)('div#container', [(0, _snabbdom.h)('h1', 'Hello World'), (0, _snabbdom.h)('p', 'Hello P'), (0, _snabbdom.h)('button', {
+    on: {
+      click: function click() {
+        patch(oldVnode, (0, _snabbdom.h)('!'));
+      }
+    }
+  }, 'Clear Page Content')]);
   patch(oldVnode, vnode); // 清空页面元素
   // patch(oldVnode, null) // 错误用法
-
-  patch(oldVnode, (0, _snabbdom.h)('!'));
+  // patch(oldVnode, h('!'))
 }, 2000);
-},{"snabbdom":"node_modules/snabbdom/snabbdom.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"snabbdom":"node_modules/snabbdom/snabbdom.js","snabbdom/modules/eventlisteners":"node_modules/snabbdom/modules/eventlisteners.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -665,7 +768,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58738" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52041" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
