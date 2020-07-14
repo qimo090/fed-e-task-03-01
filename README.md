@@ -99,6 +99,8 @@ let vm = new Vue({
 
 **3、参考 Snabbdom 提供的电影列表的示例，实现类似的效果**
 
+答：项目路径 `code/03-recorder-animation`
+
 借助 snabbdom 的模块和钩子函数实现，事件倒是不难，重点是列表行之间的间距的计算，高度的计算
 
 [源码地址](https://github.com/snabbdom/snabbdom/tree/master/examples/reorder-animation)
