@@ -1,6 +1,8 @@
 # Part 3 | Mod 1
 
-> 首先回顾 Vue Router 的基本使用，以及 Hash 模式和 History 模式的区别，然后自己手写一个实现基 History 模式的前端路由，了解路由内部实现的原理；
+> 首先回顾 Vue Router 的基本使用，以及 Hash 模式和 History 模式的区别，
+>
+> 然后自己手写一个实现基 History 模式的前端路由，了解路由内部实现的原理；
 >
 > 接下来在数据响应式实现原理分析中，自己动手一个简易版本的 Vue；
 >
@@ -30,7 +32,9 @@ let vm = new Vue({
 
 - 不是响应式数据
 
-  > 原因 [深入响应式原理](https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1)
+  Vue 无法检测 property 的添加或移除。由于 Vue 会在初始化实例时对 property 执行 getter/setter 转化，所以 property 必须在 `data` 对象上存在才能让 Vue 将它转换为响应式的。
+
+  > [深入响应式原理](https://cn.vuejs.org/v2/guide/reactivity.html#%E5%AF%B9%E4%BA%8E%E5%AF%B9%E8%B1%A1)
 
 - 解决方法
 
@@ -94,6 +98,8 @@ let vm = new Vue({
 答：项目路径 `code/02-v-html-v-on`
 
 **3、参考 Snabbdom 提供的电影列表的示例，实现类似的效果**
+
+借助 snabbdom 的模块和钩子函数实现，事件倒是不难，重点是列表行之间的间距的计算，高度的计算
 
 [源码地址](https://github.com/snabbdom/snabbdom/tree/master/examples/reorder-animation)
 
